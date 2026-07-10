@@ -18,3 +18,5 @@ DEFAULT_LLM = require_env("DEFAULT_LLM", "glm")
 ZHIPUAI_API_KEY = os.getenv("ZHIPUAI_API_KEY", "")
 MILVUS_HOST = require_env("MILVUS_HOST", "127.0.0.1")
 MILVUS_PORT = int(require_env("MILVUS_PORT", "19530"))
+MILVUS_USER = require_env("MILVUS_USER", "root")
+MILVUS_PASSWORD = require_env("MILVUS_PASSWORD")  # 无默认值，强制从 .env 填写
