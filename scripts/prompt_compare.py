@@ -7,6 +7,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
+from app.llm.client import call_chat, make_client
 
 # 从 ai-service 根目录加载 .env（脚本在 scripts/ 下时也能找到）
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -25,28 +26,11 @@ PROMPTS = {
 }
 
 
-def make_client() -> OpenAI:
-    """创建 OpenAI 兼容客户端：base_url / api_key 来自环境变量。"""
-    api_key = os.getenv("OPENAI_API_KEY", "").strip()
-    base_url = os.getenv("OPENAI_BASE_URL", "").strip()
-    if not api_key:
-        raise RuntimeError("缺少 OPENAI_API_KEY，请在 .env 中填写控制台 API Key")
-    if not base_url:
-        raise RuntimeError("缺少 OPENAI_BASE_URL，请在 .env 中填写 OpenAI 兼容地址")
-    return OpenAI(api_key=api_key, base_url=base_url)
-
-
-def call_llm(client: OpenAI, prompt: str) -> str:
-    """用 chat.completions 发一条 user 消息，返回模型正文。"""
-    model = os.getenv("OPENAI_MODEL", "sensen-code-latest").strip()
-    resp = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.2,
+def call_llm(client, prompt: str) -> str:
+    return call_chat(
+        [{"role": "user", "content": prompt}],
+        client=client,
     )
-    content = resp.choices[0].message.content
-    return content or ""
-
 
 def main() -> None:
     client = make_client()
