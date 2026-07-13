@@ -9,12 +9,20 @@
 
 from app.rag.ingest import InMemoryIndex, build_index
 from app.rag.retriever import retrieve
-from app.rag.splitters import Chunk, split_by_heading, split_fixed
+from app.rag.splitters import (
+    Chunk,
+    SplitCompareResult,
+    compare_strategies,
+    split_by_heading,
+    split_fixed,
+)
 
 __all__ = [
     "Chunk",
     "InMemoryIndex",
+    "SplitCompareResult",
     "build_index",
+    "compare_strategies",
     "retrieve",
     "split_by_heading",
     "split_fixed",
