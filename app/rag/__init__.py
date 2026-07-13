@@ -1,28 +1,23 @@
 # app/rag/__init__.py
-"""RAG 离线/在线管道模块（M03）。
+"""RAG 包：统一从 app/lessons/ 课次文件 re-export，勿在本目录新增无编号文件。
 
-四步对应关系：
-- Index 前半：splitters（切分）
-- Index 后半：ingest（向量化 + 入库；本课先用内存索引，03.04 接 Milvus）
-- Retrieve：retriever（按问题取 topK）
+跟课请直接打开 app/lessons/m03_0N_*.py，见 app/lessons/README.md。
 """
 
-from app.rag.ingest import InMemoryIndex, build_index
-from app.rag.retriever import retrieve
-from app.rag.splitters import (
-    Chunk,
-    SplitCompareResult,
-    compare_strategies,
-    split_by_heading,
-    split_fixed,
-)
+from app.lessons.m03_02_ingest import InMemoryIndex, build_index
+from app.lessons.m03_02_splitters import Chunk, split_by_heading, split_fixed
+from app.lessons.m03_04_ingest import ingest_paths
+from app.lessons.m03_05_ingest_batch import chunks_from_markdown_dir
+from app.lessons.m03_05_retriever import RetrievedHit, format_hit, retrieve
 
 __all__ = [
     "Chunk",
     "InMemoryIndex",
-    "SplitCompareResult",
+    "RetrievedHit",
     "build_index",
-    "compare_strategies",
+    "chunks_from_markdown_dir",
+    "format_hit",
+    "ingest_paths",
     "retrieve",
     "split_by_heading",
     "split_fixed",

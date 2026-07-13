@@ -1,4 +1,4 @@
-# scripts/context_window_demo.py
+# scripts/02_05_context_window_demo.py
 """02.05 上下文窗口：整本（被截断）vs 只塞相关片段——真实计数 + 真实 Chat。
 
 【你要看懂的一件事】
@@ -22,7 +22,7 @@ from pathlib import Path
 import tiktoken  # OpenAI 系常用分词器；本课用它统一数 token
 
 # ---------- 让本脚本能 import app.*（无论从哪启动）----------
-# __file__ = .../ai-service/scripts/context_window_demo.py
+# __file__ = .../ai-service/scripts/02_05_context_window_demo.py
 # parents[1] = .../ai-service
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -130,7 +130,7 @@ def pick_relevant_chunks(chunks: list[str], question: str, *, top_k: int = 3) ->
         return keyed[:top_k]
 
     try:
-        from app.models.embeddings import cosine, embed_texts
+        from app.lessons.m02_03_embeddings import cosine, embed_texts
 
         # 一次向量化：第 0 条是问题，后面是各 chunk
         vectors = embed_texts([question, *chunks])
@@ -291,5 +291,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # 直接 python scripts/context_window_demo.py 时走这里
+    # 直接 python scripts/02_05_context_window_demo.py 时走这里
     main()

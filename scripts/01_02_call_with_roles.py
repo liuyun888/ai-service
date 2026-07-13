@@ -1,4 +1,4 @@
-# scripts/call_with_roles.py（优化后）
+# scripts/01_02_call_with_roles.py
 """读取 System Prompt，与 User 分角色调用。"""
 
 from __future__ import annotations

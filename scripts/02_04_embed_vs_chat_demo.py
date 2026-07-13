@@ -1,4 +1,4 @@
-# scripts/embed_vs_chat_demo.py
+# scripts/02_04_embed_vs_chat_demo.py
 """02.04 真实对比：Chat 冒充检索 vs Embedding 召回后再 Chat。
 
 【你要看懂的一件事】
@@ -27,7 +27,7 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
 from app.llm.client import call_chat, default_model  # noqa: E402
-from app.models.embeddings import (  # noqa: E402
+from app.lessons.m02_03_embeddings import (  # noqa: E402
     cosine,
     default_embedding_model,
     embed_texts,

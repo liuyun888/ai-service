@@ -1,4 +1,4 @@
-# scripts/prompt_template_demo.py
+# scripts/01_07_prompt_template_demo.py
 """Prompt 模板工程冒烟：加载 → 填变量 → 断言；可选再调真实模型。"""
 
 from __future__ import annotations

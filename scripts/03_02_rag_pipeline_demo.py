@@ -1,13 +1,11 @@
-# scripts/rag_pipeline_demo.py
-"""03.02 RAG 全流程演示：Index → Retrieve → Augment → Generate。
+# scripts/03_02_rag_pipeline_demo.py
+"""课次 03.02 · RAG 全流程演示：Index → Retrieve → Augment → Generate。
 
-【四步怎么跑】
-1. Index（离线）：读文档 → 切 chunk → Embedding → 建索引
-2. Retrieve（在线）：问题向量化 → 取 topK 相似块
-3. Augment（在线）：片段 + 问题 + 硬约束 → Prompt
-4. Generate（在线）：Chat 生成最终回答
-
-本课用内存索引 + 真实 Embedding/Chat；Milvus 入库见 03.04。
+源码课次文件：
+- app/lessons/m03_02_splitters.py
+- app/lessons/m03_02_ingest.py
+- app/lessons/m03_02_retriever.py
+- app/lessons/m03_02_qa_chain.py
 """
 
 from __future__ import annotations
@@ -24,12 +22,12 @@ from dotenv import load_dotenv
 
 load_dotenv(ROOT / ".env")
 
-from app.chains.qa_chain import augment, generate, run_rag  # noqa: E402
+from app.lessons.m03_02_qa_chain import augment, generate, run_rag  # noqa: E402
 from app.llm.client import default_model  # noqa: E402
-from app.models.embeddings import default_embedding_model  # noqa: E402
-from app.rag.ingest import build_index  # noqa: E402
-from app.rag.retriever import retrieve  # noqa: E402
-from app.rag.splitters import split_by_heading  # noqa: E402
+from app.lessons.m02_03_embeddings import default_embedding_model  # noqa: E402
+from app.lessons.m03_02_ingest import build_index  # noqa: E402
+from app.lessons.m03_02_retriever import retrieve  # noqa: E402
+from app.lessons.m03_02_splitters import split_by_heading  # noqa: E402
 
 # ======================== 可调开关 ========================
 

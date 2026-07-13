@@ -15,4 +15,4 @@
 
 结论：同义句明显高于无关句 → Embedding 几何距离可用。
 
-> 写入 Milvus 前确认 Collection 维度与本 dim 一致（本仓库 `init_milvus.py` 默认 1024；若用 bge-small-zh-v1.5 为 512，需改 DIM 或换模型）。
+> 写入 Milvus 前确认 Collection 维度与本 dim 一致（本仓库 `scripts/00_05_init_milvus.py` 默认 1024；若用 bge-small-zh-v1.5 为 512，需改 DIM 或换模型）。

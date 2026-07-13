@@ -1,4 +1,5 @@
-# app/models/embeddings.py
+# app/lessons/m02_03_embeddings.py
+# 课次 02.03 Embedding 向量化 —— 本文件为课件原文，后续课次请勿修改
 """Embedding 封装：把文本变成真实向量（禁止伪随机/哈希假向量）。
 
 【小白直觉】
@@ -22,7 +23,7 @@ from typing import Sequence
 
 from dotenv import load_dotenv
 
-# embeddings.py 在 app/models/ 下，parents[2] = ai-service 根目录
+# embeddings 课次源码在本文件；根目录通过 Path 定位 ai-service（见 embed_texts 内注释）
 _ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(_ROOT / ".env")
 
@@ -137,7 +138,7 @@ def cosine(a: list[float], b: list[float]) -> float:
     if len(a) != len(b):
         raise ValueError(f"维度不一致：{len(a)} vs {len(b)}")
     # 点积
-    dot = sum(x * y for x, y in zip(a, b, strict=True))
+    dot = sum(x * y for x, y in zip(a, b))
     # 各自的欧氏长度（L2 范数）
     na = math.sqrt(sum(x * x for x in a))
     nb = math.sqrt(sum(x * x for x in b))

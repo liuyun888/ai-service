@@ -1,4 +1,4 @@
-# scripts/rag_vs_llm.py
+# scripts/03_01_rag_vs_llm.py
 """03.01 为什么需要 RAG：同一问题对比「纯 LLM」与「带权威资料再答」。
 
 【你要看懂的一件事】

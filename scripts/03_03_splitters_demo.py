@@ -1,12 +1,7 @@
-# scripts/splitters_demo.py
-"""03.03 文档分割演示：同一说明书，两种切法并排对比。
+# scripts/03_03_splitters_demo.py
+"""课次 03.03 · 文档分割演示（两种切法并排对比）。
 
-【本课要感受的三件事】
-1. chunk size + overlap：固定长度切会把表格/步骤拦腰斩断
-2. 语义边界：按 ## 标题切，「安装步骤」整段保留
-3. 元数据：每块带 source / section / chunk_id，后面引用与排错靠它
-
-不覆盖 03.02 已有 splitters.py，只调用其中的 split_fixed / split_by_heading。
+源码课次文件：app/lessons/m03_03_splitters.py（import 03.02，不修改 03.02 文件）
 """
 
 from __future__ import annotations
@@ -18,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from app.rag.splitters import (  # noqa: E402
+from app.lessons.m03_03_splitters import (  # noqa: E402
     compare_strategies,
     find_chunks_containing,
     format_chunk_preview,

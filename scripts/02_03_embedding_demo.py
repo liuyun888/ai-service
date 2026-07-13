@@ -1,11 +1,11 @@
-# scripts/embedding_demo.py
+# scripts/02_03_embedding_demo.py
 """02.03 Embedding 实操：真实向量化三句文本并比较余弦相似度。
 
 【你要看懂的一件事】
 「续航多久」和「电池能用几小时」意思近 → 相似度应明显高于
 「续航多久」和「食堂吃什么」。
 
-禁止用随机数/哈希冒充向量；必须走 app.models.embeddings 的真模型。
+禁止用随机数/哈希冒充向量；必须走 app.lessons.m02_03_embeddings 的真模型。
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 
 load_dotenv(ROOT / ".env")
 
-from app.models.embeddings import (  # noqa: E402
+from app.lessons.m02_03_embeddings import (  # noqa: E402
     cosine,
     default_embedding_model,
     embed_texts,
@@ -95,7 +95,7 @@ def main() -> None:
             f"- sim(1,3) 无关食堂 = **{sim13:.4f}**\n",
             "\n结论：同义句明显高于无关句 → Embedding 几何距离可用。\n",
             "\n> 写入 Milvus 前确认 Collection 维度与本 dim 一致"
-            "（本仓库 `init_milvus.py` 默认 1024；"
+            "（本仓库 `scripts/00_05_init_milvus.py` 默认 1024；"
             "若用 bge-small-zh-v1.5 为 512，需改 DIM 或换模型）。\n",
         ]
     )
