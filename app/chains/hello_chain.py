@@ -6,13 +6,12 @@
 - Runnable = 每一块积木都能 invoke
 - LCEL = 用 | 把积木接成水管，数据从左流到右
 
-本课先内联一个 Chat 模型（对接已有 OpenAI 兼容环境变量）；
-05.02 再抽成 factory.get_chat_model()，本文件尽量少改。
+05.02 起：真模型统一走 app.models.factory.get_chat_model()；
+本文件的 make_chat_model 仅作薄封装，方便旧演示脚本 import。
 """
 
 from __future__ import annotations
 
-import os
 from typing import Any
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -34,24 +33,13 @@ HELLO_PROMPT = ChatPromptTemplate.from_messages(
 
 
 def make_chat_model(*, temperature: float = 0.2) -> BaseChatModel:
-    """本课临时模型入口：读 OPENAI_* 环境变量，走 OpenAI 兼容网关。
+    """向后兼容入口：内部委托多模型工厂（读 DEFAULT_LLM）。
 
-    05.02 会把这段搬进 factory；调用方以后只认 get_chat_model()。
+    新代码请直接：from app.models.factory import get_chat_model
     """
-    from langchain_openai import ChatOpenAI
+    from app.models.factory import get_chat_model
 
-    api_key = os.getenv("OPENAI_API_KEY", "").strip()
-    base_url = os.getenv("OPENAI_BASE_URL", "").strip() or None
-    model_name = os.getenv("OPENAI_MODEL", "sensen-code-latest").strip()
-    if not api_key:
-        raise RuntimeError("缺少 OPENAI_API_KEY：请在 .env 填写后再跑真模型")
-
-    return ChatOpenAI(
-        model=model_name,
-        api_key=api_key,
-        base_url=base_url,
-        temperature=temperature,
-    )
+    return get_chat_model(temperature=temperature)
 
 
 def make_offline_model() -> Runnable:
