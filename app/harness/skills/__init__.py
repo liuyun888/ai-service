@@ -1,2 +1,6 @@
 # app/harness/skills/__init__.py
-"""可插拔 Skill / 子任务约定（后续 Deep Agents 课使用；本课仅骨架）。"""
+"""子 Agent Skill / brief 模板（08.05）。"""
+
+from app.harness.skills.registry import list_skills, load_brief
+
+__all__ = ["list_skills", "load_brief"]

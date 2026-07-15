@@ -1,0 +1,9 @@
+{
+  "demo::user:demo:pref": {
+    "key": "user:demo:pref",
+    "value": "条目制；少形容词；避免绝对承诺",
+    "tenant_id": "demo",
+    "source": "user_explicit",
+    "updated_at": "2026-07-15 23:52:47"
+  }
+}

@@ -1,2 +1,6 @@
 # app/harness/memory/__init__.py
-"""长期记忆 / 会话记忆挂钩（08.05 加深；本课仅目录骨架）。"""
+"""长期记忆：Memory Store（08.05）。"""
+
+from app.harness.memory.store import DEFAULT_MEMORY, MemoryStore
+
+__all__ = ["DEFAULT_MEMORY", "MemoryStore"]
