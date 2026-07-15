@@ -1,0 +1,10 @@
+{"question": "七天无理由退货需要什么条件？", "expected_source": "return_policy.md"}
+{"question": "降噪耳机 Pro 整机保修多久？", "expected_source": "return_policy.md"}
+{"question": "签收超过七天出现质量问题如何处理？", "expected_source": "return_policy.md"}
+{"question": "工作日几点前付款可以当天发货？", "expected_source": "shipping_faq.md"}
+{"question": "新疆西藏偏远地区时效大概怎样？", "expected_source": "shipping_faq.md"}
+{"question": "发货后怎么查询物流运单号？", "expected_source": "shipping_faq.md"}
+{"question": "选修数据结构需要先修哪些课？", "expected_source": "course_enrollment.md"}
+{"question": "数据结构课程平时作业占总成绩多少？", "expected_source": "course_enrollment.md"}
+{"question": "门诊就诊前需要携带哪些证件？", "expected_source": "hospital_visit.md"}
+{"question": "医院当日号源大概几点开放？", "expected_source": "hospital_visit.md"}

@@ -14,5 +14,6 @@
 | 03.04 | `m03_04_ingest.py` | ingest_paths |
 | 03.05 | `m03_05_ingest_batch.py` | 多文档 batch 切分 |
 | 03.05 | `m03_05_retriever.py` | Milvus+内存统一 retrieve |
+| 03.06 | `m03_06_qa_chain.py` | 编号 Augment + 带引用问答 |
 
 演示脚本在 `scripts/MM_NN_*.py`，完整索引见仓库根 `CODEMAP.md`。

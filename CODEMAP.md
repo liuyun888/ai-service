@@ -24,6 +24,7 @@
 | 03.03 | `03_03_splitters_demo.py` |
 | 03.04 | `03_04_init_milvus_rag.py`、`03_04_ingest_sample_docs.py` |
 | 03.05 | `03_05_retrieve_demo.py` |
+| 03.06 | `03_06_qa_chain_demo.py`、`03_06_rag_eval_smoke.py` |
 
 ## 模块 `app/lessons/`
 
@@ -39,6 +40,7 @@
 | 03.04 | `m03_04_ingest.py` | ingest_paths |
 | 03.05 | `m03_05_ingest_batch.py` | 多文档 batch 切分 |
 | 03.05 | `m03_05_retriever.py` | Milvus+内存统一 retrieve |
+| 03.06 | `m03_06_qa_chain.py` | 编号 Augment + 带引用问答 |
 
 ## 依赖方向（只许向下 import）
 
@@ -48,6 +50,7 @@ m02_03_embeddings
   → m03_03_splitters（import m03_02）
   → m03_04_milvus_store / m03_04_ingest
   → m03_05_ingest_batch / m03_05_retriever
+  → m03_06_qa_chain（import m03_05 + llm.client）
 ```
 
 ## 基础设施（不按课拆分）
