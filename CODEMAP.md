@@ -29,6 +29,7 @@
 | 04.02 | `04_02_reindex_demo.py` |
 | 04.03 | `04_03_tenant_isolation_demo.py` |
 | 04.04 | `04_04_ingest_api_demo.py` |
+| 05.01 | `05_01_hello_chain_demo.py` |
 
 ## 模块 `app/lessons/`
 
@@ -74,6 +75,8 @@ m02_03_embeddings
 | `app/main.py` | 00.02 |
 | `app/config.py` | 00.03 |
 | `app/llm/client.py` | 01.x 共用 |
+| `app/api/rag.py` | 04.04 |
+| `app/chains/hello_chain.py` | 05.01 |
 | `app/prompts/*.md` | 01.x 各课 |
 | `app/models/schemas.py` | 01.05 |
 
