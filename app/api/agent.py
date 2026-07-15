@@ -1,22 +1,26 @@
 # app/api/agent.py
-"""课次 05.07 · 最小 Tool-calling / ReAct 初体验。
+"""课次 05.07 + 06.04 · Tool Agent 与单 Agent HTTP 入口。
 
-不做完整 Loop 工程（留给 M06）：这里只要：
+05.07（最小环）：
 1. 模型能看到 Tool schema（bind_tools）
 2. 若决定调用 → 执行函数 → 把 Observation 塞回 messages
 3. 再让模型说 Final Answer
 4. trace 里能看见调了哪个 tool、什么参数
 
-可选：USE_CHAT=0 时用「脚本化一步 ReAct」不调模型，也能验收 Tool 本身。
+06.04（落地）：
+- POST /agent/chat：session 记忆 + 两类 Tool（库存/运单 + 知识检索）
+- 开发期把 trace 返回，方便课堂验收「组合问 ≥2 类 Tool」
 """
 
 from __future__ import annotations
 
 from typing import Any, Callable
 
+from fastapi import APIRouter
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import BaseTool
+from pydantic import BaseModel, Field
 
 from app.tools.inventory import get_inventory, get_shipment
 
@@ -161,3 +165,72 @@ def build_default_agent_runner(*, use_chat: bool = True):
         return run_tool_agent(question, model=get_chat_model(temperature=0.1))
 
     return _run
+
+
+# ---------------------------------------------------------------------------
+# 06.04 · HTTP：POST /agent/chat
+# ---------------------------------------------------------------------------
+
+router = APIRouter(prefix="/agent", tags=["agent"])
+
+
+class AgentChatRequest(BaseModel):
+    """智能客服一问一答请求。
+
+    需求点：C 端会话页 —— 用户发消息，后端跑单 Agent 再回包。
+    """
+
+    message: str = Field(..., min_length=1, description="用户本轮话术；对接：输入框内容")
+    session_id: str = Field(
+        "default",
+        description="会话 ID，同会话可带短记忆；对接：前端生成的 session UUID",
+    )
+    tenant_id: str = Field(
+        "demo",
+        description="租户 ID；对接：登录态租户（本课仅回传，RAG 隔离见 M04）",
+    )
+    use_chat: bool | None = Field(
+        None,
+        description="是否走真模型；None=读环境变量 USE_CHAT；对接：调试开关",
+    )
+
+
+class AgentChatResponse(BaseModel):
+    """客服回复 + 可选轨迹（课堂验收用）。"""
+
+    reply: str = Field(..., description="助手最终回复；对接：聊天气泡")
+    session_id: str
+    tenant_id: str
+    mode: str = Field(..., description="scripted | llm")
+    trace: list[dict[str, Any]] = Field(default_factory=list, description="Tool 轨迹")
+    tool_classes: list[str] = Field(
+        default_factory=list,
+        description="本轮用到的工具类别，如 业务状态/知识检索",
+    )
+    session_sku: str = Field("", description="会话里已记住的 sku（若有）")
+
+
+@router.post("/chat", response_model=AgentChatResponse)
+def agent_chat(body: AgentChatRequest) -> AgentChatResponse:
+    """单 Agent 客服入口。
+
+    需求点：智能客服页 / 课堂验收 —— 组合问题应出现 ≥2 类 Tool。
+    """
+    # 懒加载，避免与 lessons 互相 import 顶层环
+    from app.lessons.m06_04_single_agent import run_customer_agent_turn
+
+    out = run_customer_agent_turn(
+        body.message,
+        session_id=body.session_id,
+        tenant_id=body.tenant_id,
+        use_chat=body.use_chat,
+    )
+    return AgentChatResponse(
+        reply=out["reply"],
+        session_id=out["session_id"],
+        tenant_id=out["tenant_id"],
+        mode=out["mode"],
+        trace=list(out.get("trace") or []),
+        tool_classes=list(out.get("tool_classes") or []),
+        session_sku=str(out.get("session_sku") or ""),
+    )
