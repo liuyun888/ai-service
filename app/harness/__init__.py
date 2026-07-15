@@ -7,4 +7,5 @@
 - memory/      记忆挂钩
 - skills/      Skill / 子任务约定
 - shell.py     最小外壳对照（裸奔 vs 拴挽具）
+- deep_agent.py 显式 todos + 步进循环（08.04）
 """
