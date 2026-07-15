@@ -47,6 +47,13 @@ def get_shipment(tracking_no: str) -> str:
     对照示例：与 get_inventory 同构——换参数名与 mock 表即可。
     何时用：用户给出运单号问「到哪了」。
     何时不用：没有运单号时硬猜；退款/改址等写入操作。
+
+    参数:
+        tracking_no: 运单号，例如 SF123456
+
+    返回:
+        成功: 「tracking_no=..., status=...」
+        失败: 「not_found」或「error: tracking_no 不能为空」
     """
     no = (tracking_no or "").strip().upper()
     mock = {
