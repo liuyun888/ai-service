@@ -18,5 +18,6 @@
 | 04.01 | `m04_01_qa_chain.py` | 拒答闸门（低分短路） |
 | 04.02 | `m04_02_reindex.py` | 切片边界诊断 + 按 source reindex |
 | 04.03 | `m04_03_tenant_store.py` | 租户 metadata 隔离检索 |
+| 04.04 | `m04_04_ingest_service.py` | 上游触发同步 ingest |
 
 演示脚本在 `scripts/MM_NN_*.py`，完整索引见仓库根 `CODEMAP.md`。

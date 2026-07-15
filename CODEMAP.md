@@ -28,6 +28,7 @@
 | 04.01 | `04_01_refuse_demo.py` |
 | 04.02 | `04_02_reindex_demo.py` |
 | 04.03 | `04_03_tenant_isolation_demo.py` |
+| 04.04 | `04_04_ingest_api_demo.py` |
 
 ## 模块 `app/lessons/`
 
@@ -47,6 +48,9 @@
 | 04.01 | `m04_01_qa_chain.py` | 拒答闸门（低分短路） |
 | 04.02 | `m04_02_reindex.py` | 切片边界诊断 + 按 source reindex |
 | 04.03 | `m04_03_tenant_store.py` | 租户 metadata 隔离检索 |
+| 04.04 | `m04_04_ingest_service.py` | 上游触发同步 ingest |
+
+API：`app/api/rag.py`（`POST /rag/ingest`、`GET /rag/search`）
 
 ## 依赖方向（只许向下 import）
 
@@ -60,6 +64,7 @@ m02_03_embeddings
   → m04_01_qa_chain（import m03_06；加闸门）
   → m04_02_reindex（import m03_03/04/05；增量替换）
   → m04_03_tenant_store（租户过滤；不改 m03_05）
+  → m04_04_ingest_service → app/api/rag.py
 ```
 
 ## 基础设施（不按课拆分）
