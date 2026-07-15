@@ -1,83 +1,51 @@
-# Prompt 模板工程记录
+# 05.03 PromptTemplate · 实跑记录
 
-目录内模板：compare.md, extract_json.md, faq_few_shot.md, guard.md, system_assistant.md
+- USE_CHAT: `True`
+- question: 用两句话介绍你能做什么
+- provider: `openai` / model=`astron-code-latest`
 
-## system_assistant
+## STEP 1 · 预览 messages
 
-```text
-你是简洁的在线助手。
+- [system] 你是简洁的在线助手。
 
 规则：
 1. 不知道就说不知道，禁止编造业务数据。
 2. 默认简体中文，分点作答，单次不超过 8 条。
 3. 涉及下单、支付、医疗诊断、法律结论时，提示用户走正式渠道。
-```
+- [human] 用两句话介绍你能做什么
 
-## compare
-
-```text
-# Context
-用户通勤地铁 40 分钟，预算约 1000 元，对比两款降噪耳机。
-
-# Role
-你是数码导购助手。
-
-# Insight
-判断原则：优先匹配通勤降噪；缺参数写「未知」，禁止编造。
-禁止：编造未提供的数据；给出无法核实的承诺。
-
-# Statement
-任务：给出推荐结论与 3 条对比要点。
-
-# Personality
-语气：简洁、口语、不夸张营销。
-
-# Experiment（输出格式）
-用 Markdown：## 结论 / ## 对比 / ## 注意
-```
-
-## faq_few_shot
+## STEP 2 · 整链
 
 ```text
-你是电商售后助手。请严格模仿下面样例的口吻、长度与边界
-（尤其是不承诺绝对时效、不直接改库）。
-
-示例1
-Q: 周末下单何时发货？
-A: 一般工作日 24 小时内发出；周末订单顺延到下一工作日处理。
-
-示例2
-Q: 能改送到公司吗？
-A: 可以。请提供订单号与新地址，我帮你说明修改入口；我这边不能直接改库。
-
-示例3
-Q: 你们是不是明天肯定到？
-A: 无法承诺「肯定」。通常时效以物流页面为准，你可以在订单里点「查看物流」查询。
-
-现在请用相同风格回答新问题（只答新问题，不要复述示例）：
-Q: 今晚下单明天能到吗？
-
+1. 我能以简体中文为您分点解答各类常识与信息问题。
+2. 涉及下单、支付、医疗或法律等专业领域时，我会提示您走正式渠道。
 ```
 
-## extract_json
+## STEP 3 · 缺变量
+
+- `KeyError`: "Input to ChatPromptTemplate is missing variables {'question'}.  Expected: ['question'] Received: []\nNote: if you intended {question} to be part of the string and not a variable, 
+
+## STEP 4 · compare.md
 
 ```text
-你是信息抽取助手。
+结论：选A。通勤地铁40分钟环境噪音大，强降噪是刚需，优先保耳朵清净。
 
-任务：从用户文本中抽取结构化字段，只输出 JSON，不要 Markdown 围栏，不要解释。
+对比：
+1. 降噪效果：A主打强降噪，对付地铁轰鸣更拿手；B降噪大概率偏弱，地铁里可能听歌费劲。
+2. 佩戴感受：B主打轻便，久戴耳道压迫小；A可能偏重或夹头，40分钟通勤基本能扛，但舒适度不如B。
+3. 续航与价格：两款具体续航和价格均未知，但降噪芯片通常更耗电，A续航可能不如B；预算有限的话，需留意A是否溢价过高。
 
-Schema 说明：
-{"order_id": string|null, "intent": "query_logistics"|"change_address"|"other", "need_human": boolean}
-
-用户文本：
-帮我查一下订单 ORD-10086 到哪了，急用。
-
-输出要求：
-- 缺信息用 null 或空数组，禁止编造
-- 必须是合法 JSON 对象
-
+注意：两款具体价格未知，如果A的实际价格远超你的预算，只能退而求其次选B，并在地铁里适当调大音量（伤耳，不建议长期如此）。
 ```
 
-## llm_faq_answer
+## 可选 · partial 租户
 
-无法承诺「明天能到」。通常时效以物流页面为准，你可以在订单里点「查看物流」查询。
+```text
+星河书店支持退货，请通过官方订单页面提交申请，具体结果以审核为准。
+```
+
+## 结论
+
+- md = 文案；ChatPromptTemplate = 链上节点；`{var}` 运行时绑定。
+- `{{var}}`（loader）与 `{var}`（LC）分阶段用，不要糊在同一段原文里混解析。
+- 缺变量要失败可见；改 md 重跑即可，不必改业务管道。
