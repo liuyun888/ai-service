@@ -9,4 +9,5 @@
 - shell.py     最小外壳对照（裸奔 vs 拴挽具）
 - deep_agent.py 显式 todos + 步进循环（08.04）
 - subagent.py  子 Agent 委派与隔离（08.05）
+- middleware/  钩子链、Compaction、Trace（08.06）
 """

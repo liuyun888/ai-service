@@ -1,0 +1,64 @@
+{
+  "trace_id": "200a79a37331",
+  "created_at": "2026-07-16 00:01:17",
+  "input": {
+    "user_text": "保证明天一定到货。"
+  },
+  "draft_reply": "好的，保证明天一定到货，请放心。",
+  "final_reply": "我无法做出绝对承诺。请以订单页时效/书面政策为准，我可以帮你查询当前状态。",
+  "tool": {
+    "name": "search_knowledge",
+    "observation": "物流查询：用户手机 [REDACTED_PHONE]，证件 [REDACTED_ID]，当前在途。原始报文很长……详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情"
+  },
+  "blocked": true,
+  "events": [
+    {
+      "at": "2026-07-16 00:01:17",
+      "hook": "before_tool",
+      "middleware": "Authz",
+      "tool": "search_knowledge",
+      "allowed": true,
+      "detail": "ok"
+    },
+    {
+      "at": "2026-07-16 00:01:17",
+      "hook": "after_tool",
+      "middleware": "PIIRedact",
+      "changed": true,
+      "text": "物流查询：用户手机 [REDACTED_PHONE]，证件 [REDACTED_ID]，当前在途。原始报文很长……详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情详情"
+    },
+    {
+      "at": "2026-07-16 00:01:17",
+      "hook": "after_model",
+      "middleware": "TokenLog",
+      "trace_id": "200a79a37331",
+      "prompt_tokens": 11,
+      "completion_tokens": 8,
+      "total_tokens": 19
+    },
+    {
+      "at": "2026-07-16 00:01:17",
+      "hook": "before_final",
+      "middleware": "CommitmentGuard",
+      "triggered": true,
+      "rule": "absolute_promise",
+      "input_preview": "好的，保证明天一定到货，请放心。",
+      "output": "我无法做出绝对承诺。请以订单页时效/书面政策为准，我可以帮你查询当前状态。",
+      "ok": false
+    }
+  ],
+  "platform_note": "可导出到 LangSmith；本课先用自建 JSON",
+  "extra": {
+    "scenario": "commitment_guard",
+    "compaction_preview": {
+      "before": 3048,
+      "after": 761,
+      "pointers": [
+        "case/complaints_week.md",
+        "§2.1",
+        "manual/return_policy.md"
+      ]
+    },
+    "deep_todos_hint": "可把 08.04 trajectory 一并挂到 extra"
+  }
+}
