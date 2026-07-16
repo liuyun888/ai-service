@@ -1,15 +1,16 @@
 # app/mcp/server.py
-"""课次 09.02 · 最小可启动 MCP Server（stdio）。
+"""课次 09.02～09.03 · MCP Server（stdio）+ 带 Schema 的可发现 Tool。
 
-进程模型：Cursor / 探针 Client 拉起本进程，经 stdin/stdout 走 MCP 协议。
-大忌：不要往 stdout print 调试信息——会弄脏协议帧；日志一律 stderr。
-
-本课 Tool 先 mock，证明「能启动 + 能 list」；真业务 Schema 见 09.03。
+09.02：进程可启动、日志走 stderr。
+09.03：业务进 tools_*.py；此处只做薄注册 + 清晰 docstring/Field。
 """
 
 from __future__ import annotations
 
 import sys
+from typing import Annotated
+
+from pydantic import Field
 
 
 def log(msg: str) -> None:
@@ -23,24 +24,51 @@ except ImportError as exc:  # pragma: no cover
     log(f"ImportError: 请先 pip install mcp  ({exc})")
     raise
 
-# Server 名：Client 配置里常对应 mcpServers 的 key 旁白
 mcp = FastMCP("ai-service-tools")
 
 
 @mcp.tool()
-def search_docs(query: str) -> str:
-    """按关键词搜索知识库（本课为 mock，证明管道通）。
+def search_docs(
+    query: Annotated[str, Field(description="搜索关键词，如「已拆封」；不要传整段文章")],
+) -> str:
+    """按关键词搜索知识库；不要用于写入或删改文件。适合找政策/投诉摘要片段。"""
+    from app.mcp.tools_search import search_docs as _impl
 
-    参数:
-        query: 搜索关键词
-    """
     log(f"search_docs query={query!r}")
-    return f"mock: no hits for {query!r}; server is alive"
+    return _impl(query)
+
+
+@mcp.tool()
+def get_inventory(
+    sku: Annotated[
+        str,
+        Field(description="SKU，须含颜色尺码后缀，示例 SHOE-RED-42"),
+    ],
+) -> str:
+    """按 SKU 查询可用库存；不要用于下单或改库存。返回短 JSON {sku,qty,warehouse}。"""
+    from app.mcp.tools_inventory import get_inventory as _impl
+
+    log(f"get_inventory sku={sku!r}")
+    return _impl(sku)
+
+
+@mcp.tool()
+def get_shipment(
+    tracking_no: Annotated[
+        str,
+        Field(description="运单号，示例 SF1234567890"),
+    ],
+) -> str:
+    """按运单号查询物流状态；不要用于改地址或拦截件。返回短 JSON 或 error=。"""
+    from app.mcp.tools_inventory import get_shipment as _impl
+
+    log(f"get_shipment tracking_no={tracking_no!r}")
+    return _impl(tracking_no)
 
 
 def main() -> None:
-    """入口：默认 stdio transport，前台会「卡住」等 Client——属正常。"""
-    log("starting MCP server (stdio); logs go to stderr only")
+    """入口：默认 stdio；前台卡住等 Client 属正常。"""
+    log("starting MCP server (stdio); tools=search_docs,get_inventory,get_shipment")
     mcp.run(transport="stdio")
 
 
