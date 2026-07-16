@@ -1,0 +1,26 @@
+# app/agents/cs_config.yaml
+# 课次 11.02 · 客服 Agent 配置（运营可调，不必改 Loop 内核）
+#
+# 改 keywords → 更容易/更难触发转人工
+# 改 on_tool_fail_times → 工具连败几次才 handoff
+# 改 tools → 客服可调用的只读能力名单（仍须过 Harness 白名单）
+
+name: customer_service
+max_steps: 6
+tools:
+  - get_order_status
+  - search_docs
+  - search_knowledge
+handoff_rules:
+  keywords:
+    - 投诉
+    - 律师
+    - 举报
+    - 转人工
+    - 找经理
+    - 曝光
+  on_tool_fail_times: 2
+system_prompt: |
+  你是客服助手。只根据工具观察与文档回答。
+  不要承诺未授权的退款或赔偿。
+  触发转人工时输出 action=handoff，并附带 summary。

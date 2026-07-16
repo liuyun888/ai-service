@@ -26,7 +26,9 @@ TOOL_WHITELIST: frozenset[str] = frozenset(
     {
         "get_inventory",
         "get_shipment",
+        "get_order_status",  # 11.02 客服配置名（映射 get_shipment）
         "search_knowledge",
+        "search_docs",  # 11.01：VFS/文档检索（与 search_knowledge 同属知识类）
         "get_course",
     }
 )

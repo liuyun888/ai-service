@@ -65,3 +65,13 @@ def get_shipment(tracking_no: str) -> str:
     if no not in mock:
         return "not_found"
     return f"tracking_no={no}, status={mock[no]}"
+
+
+@tool
+def get_order_status(tracking_no: str) -> str:
+    """查询订单物流状态（只读）；客服配置里常用此名，底层同 get_shipment。
+
+    参数:
+        tracking_no: 运单/订单物流号，例如 SF123456
+    """
+    return get_shipment.invoke({"tracking_no": tracking_no})
