@@ -1,0 +1,48 @@
+# 课次 13.01 · 最小 Compose：先拉起 ai-service + 健康检查
+# 向量库（Milvus）默认仍用本机/外挂，不在此强制起；文档见 README / 专栏 13.01
+#
+# 用法（在 ai-service/ 下）：
+#   docker compose up -d --build
+#   curl -f http://127.0.0.1:8091/health
+#   docker compose down
+#
+# 密钥：优先读同目录 .env；勿把真 Key 写进本文件后提交。
+
+services:
+  ai-service:
+    build: .
+    image: ai-service:local
+    container_name: ai-service
+    ports:
+      # 宿主机:容器 —— 与专栏联调端口一致
+      - "${APP_PORT:-8091}:8091"
+    # 项目目录下的 .env 会自动参与 ${VAR} 替换；敏感值用 environment 显式注入容器
+    environment:
+      # 可被 .env 覆盖；这里给「无 .env 也能起容器」的安全默认值（仅本地演示）
+      APP_NAME: ${APP_NAME:-ai-service}
+      APP_PORT: "8091"
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN:-dev-internal-token}
+      INGEST_TOKEN: ${INGEST_TOKEN:-dev-ingest-token}
+      DEFAULT_LLM: ${DEFAULT_LLM:-openai}
+      MILVUS_HOST: ${MILVUS_HOST:-host.docker.internal}
+      MILVUS_PORT: ${MILVUS_PORT:-19530}
+      MILVUS_USER: ${MILVUS_USER:-root}
+      # 必填项：未配 .env 时用占位，避免进程 import 直接崩
+      MILVUS_PASSWORD: ${MILVUS_PASSWORD:-dev-milvus-pass}
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-local}
+      # 模型 Key 仍从 .env 注入；不要写死在镜像里
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+    extra_hosts:
+      # Linux 下访问宿主机 Milvus；Mac/Win Docker Desktop 通常已内置
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8091/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    # 收到 stop 后等待优雅收尾的时间（与 uvicorn timeout-graceful-shutdown 对齐）
+    stop_grace_period: 25s
+    restart: unless-stopped

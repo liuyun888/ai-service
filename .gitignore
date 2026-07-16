@@ -137,3 +137,6 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# 13.02 Trace 导出目录（可本地保留，不强制提交）
+tmp/

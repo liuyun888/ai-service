@@ -1,0 +1,14 @@
+# 减小镜像体积、避免把密钥与垃圾打进层
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.git/
+notes/
+*.md
+!README.md
+.DS_Store

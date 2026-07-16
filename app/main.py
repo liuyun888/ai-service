@@ -10,8 +10,9 @@ from app.api.kb import router as kb_router
 from app.api.rag import router as rag_router
 from app.api.workflows import router as workflows_router
 from app.config import APP_NAME
+from app.lifecycle import app_lifespan
 
-app = FastAPI(title=APP_NAME)
+app = FastAPI(title=APP_NAME, lifespan=app_lifespan)
 
 # 04.04：管理端上传回调 → /rag/ingest
 app.include_router(rag_router)
