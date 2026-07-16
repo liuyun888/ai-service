@@ -5,6 +5,7 @@ from app.api.assistant import router as assistant_router
 from app.api.assistant_stream import router as assistant_stream_router
 from app.api.chat_stream import router as chat_stream_router
 from app.api.cs import router as cs_router
+from app.api.extract import router as extract_router
 from app.api.kb import router as kb_router
 from app.api.rag import router as rag_router
 from app.api.workflows import router as workflows_router
@@ -30,6 +31,8 @@ app.include_router(cs_router)
 app.include_router(workflows_router)
 # 11.04：知识库问答+护栏 → /v1/kb/chat
 app.include_router(kb_router)
+# 12.03：抽取编排 → /v1/extract/invoice
+app.include_router(extract_router)
 
 
 @app.get("/health")

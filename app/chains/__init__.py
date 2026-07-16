@@ -7,8 +7,10 @@
 - M05.04：parsers.py + recommend_chain.py（结构化输出）
 - M05.05：knowledge_retriever.py（Retriever 适配器）
 - M05.06：rag_chain.py（检索→闸门→生成）
+- M12.01：extract.py（正则 + LLM/模拟 Schema 抽取）
 """
 
+from app.chains.extract import extract_invoice, regex_invoice_no
 from app.chains.hello_chain import build_hello_chain, run_hello
 from app.chains.knowledge_retriever import KnowledgeRetriever
 from app.chains.prompt_file_chain import build_assistant_chain, run_assistant
@@ -29,4 +31,6 @@ __all__ = [
     "KnowledgeRetriever",
     "build_rag_chain",
     "run_rag_chain",
+    "extract_invoice",
+    "regex_invoice_no",
 ]
