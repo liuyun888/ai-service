@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "ai-service-tools": {
+      "command": "/Users/liuyunkai/Documents/workspace/AI从0到1/ai-service/.venv/bin/python",
+      "args": [
+        "-m",
+        "app.mcp.server"
+      ],
+      "cwd": "/Users/liuyunkai/Documents/workspace/AI从0到1/ai-service"
+    }
+  }
+}
