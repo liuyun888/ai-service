@@ -10,4 +10,6 @@
 - deep_agent.py 显式 todos + 步进循环（08.04）
 - subagent.py  子 Agent 委派与隔离（08.05）
 - middleware/  钩子链、Compaction、Trace（08.06）
+
+工具接入（09.04）：开发调试可走 MCP（app/mcp）；生产热路径进程内 import tools_*.py。
 """
