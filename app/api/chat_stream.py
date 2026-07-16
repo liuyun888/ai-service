@@ -1,11 +1,12 @@
 # app/api/chat_stream.py
-"""课次 10.03 · ai-service SSE 聊天流。
+"""课次 10.03～10.04 · ai-service SSE 聊天流。
 
 事件约定（JSON）：
   {"type":"token","text":"..."}
-  {"type":"done"}
+  {"type":"done","tenant_id":"...","user_id":"...","model_id":"...","request_id":"..."}
   {"type":"error","message":"..."}
 
+10.04：必须带 X-Internal-Token + X-Tenant-Id；done 事件回显可信上下文，方便验收。
 客户端断开后停止生成，避免模型空跑烧钱（本课用 mock sleep 模拟生成）。
 """
 
@@ -13,13 +14,17 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from typing import Any, AsyncIterator
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
+from app.security.internal_auth import InternalContext, require_internal_context
+
 router = APIRouter(prefix="/v1", tags=["chat-stream"])
+logger = logging.getLogger("ai-service.chat_stream")
 
 # 可调：每个 token 间隔（秒）；改小打字更快，改大更容易观察流式
 TOKEN_INTERVAL_SEC = 0.04
@@ -39,6 +44,7 @@ def _sse_data(payload: dict[str, Any]) -> str:
 async def iter_chat_tokens(
     message: str,
     *,
+    ctx: InternalContext | None = None,
     request: Request | None = None,
     interval: float = TOKEN_INTERVAL_SEC,
 ) -> AsyncIterator[str]:
@@ -46,6 +52,7 @@ async def iter_chat_tokens(
 
     参数:
         message: 用户话术
+        ctx: 10.04 可信上下文；有则写入 done，并打日志
         request: FastAPI Request；用于 is_disconnected
         interval: 每字间隔，模拟生成耗时
     """
@@ -60,7 +67,17 @@ async def iter_chat_tokens(
             if interval > 0:
                 await asyncio.sleep(interval)
         if not cancelled:
-            yield _sse_data({"type": "done"})
+            done: dict[str, Any] = {"type": "done"}
+            if ctx is not None:
+                done.update(
+                    {
+                        "tenant_id": ctx.tenant_id,
+                        "user_id": ctx.user_id,
+                        "model_id": ctx.model_id,
+                        "request_id": ctx.request_id,
+                    }
+                )
+            yield _sse_data(done)
     except asyncio.CancelledError:
         # 上游取消：不再继续 yield
         raise
@@ -71,13 +88,43 @@ async def iter_chat_tokens(
             setattr(request.state, "sse_cancelled", True)
 
 
+@router.get("/context/echo")
+def context_echo(ctx: InternalContext = Depends(require_internal_context)) -> dict[str, str]:
+    """非流式回显：验收「头是否到达」时不必拉整段 SSE。"""
+    logger.info(
+        "context_echo tenant=%s user=%s model=%s request_id=%s",
+        ctx.tenant_id,
+        ctx.user_id,
+        ctx.model_id,
+        ctx.request_id,
+    )
+    return {
+        "tenant_id": ctx.tenant_id,
+        "user_id": ctx.user_id,
+        "model_id": ctx.model_id,
+        "request_id": ctx.request_id,
+    }
+
+
 @router.post("/chat/stream")
-async def chat_stream(body: ChatStreamBody, request: Request) -> StreamingResponse:
-    """SSE：边生成边推；Content-Type=text/event-stream。"""
+async def chat_stream(
+    body: ChatStreamBody,
+    request: Request,
+    ctx: InternalContext = Depends(require_internal_context),
+) -> StreamingResponse:
+    """SSE：边生成边推；须通过内部鉴权。"""
+
+    logger.info(
+        "chat_stream tenant=%s user=%s model=%s request_id=%s",
+        ctx.tenant_id,
+        ctx.user_id,
+        ctx.model_id,
+        ctx.request_id,
+    )
 
     async def gen() -> AsyncIterator[str]:
         try:
-            async for line in iter_chat_tokens(body.message, request=request):
+            async for line in iter_chat_tokens(body.message, ctx=ctx, request=request):
                 yield line
         except Exception as exc:  # noqa: BLE001
             yield _sse_data({"type": "error", "message": f"{type(exc).__name__}: {exc}"})

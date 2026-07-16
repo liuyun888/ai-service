@@ -9,7 +9,18 @@ from typing import Any
 from fastapi.testclient import TestClient
 
 from app.api.chat_stream import TOKEN_INTERVAL_SEC, _sse_data
+from app.config import INTERNAL_TOKEN
 from app.main import app
+
+# 10.04 起流式接口要内部头；本课演示用固定演示上下文
+_DEMO_AUTH_HEADERS = {
+    "Accept": "text/event-stream",
+    "X-Internal-Token": INTERNAL_TOKEN,
+    "X-Tenant-Id": "demo",
+    "X-User-Id": "demo-user",
+    "X-Model-Id": "default",
+    "X-Request-Id": "req-m10-03",
+}
 
 
 def event_contract() -> list[dict[str, str]]:
@@ -29,7 +40,7 @@ def demo_stream_tokens(message: str = "退货要几天") -> dict[str, Any]:
         "POST",
         "/v1/chat/stream",
         json={"message": message},
-        headers={"Accept": "text/event-stream"},
+        headers=_DEMO_AUTH_HEADERS,
     ) as resp:
         assert resp.status_code == 200
         assert "text/event-stream" in (resp.headers.get("content-type") or "")

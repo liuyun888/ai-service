@@ -22,3 +22,8 @@ MILVUS_HOST = require_env("MILVUS_HOST", "127.0.0.1")
 MILVUS_PORT = int(require_env("MILVUS_PORT", "19530"))
 MILVUS_USER = require_env("MILVUS_USER", "root")
 MILVUS_PASSWORD = require_env("MILVUS_PASSWORD")  # 无默认值，强制从 .env 填写
+
+# ---- 10.04 服务间鉴权 ----
+# 可调：与 ai-bff 共享的内部密钥；只放服务端 .env，绝不能进前端包
+# 改了这边必须同步改 BFF 的 INTERNAL_TOKEN，否则下游全 401
+INTERNAL_TOKEN = os.getenv("INTERNAL_TOKEN", "dev-internal-token")
